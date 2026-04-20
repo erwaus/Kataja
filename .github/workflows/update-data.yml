@@ -25,6 +25,8 @@ jobs:
 
       - name: Run scraper
         run: python scrape.py
+        env:
+          BASKETBALL_API_KEY: ${{ secrets.BASKETBALL_API_KEY }}
 
       - name: Commit and push if data changed
         run: |
