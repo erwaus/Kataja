@@ -1,0 +1,45 @@
+{
+  "updated": "2026-04-20T00:00:00+00:00",
+  "updated_fi": "20.04.2026 00:00",
+  "scrape_success": false,
+  "playoff": {
+    "semifinal_kataja": {
+      "home": "Kataja Basket",
+      "away": "Helsinki Seagulls",
+      "series": "0-2",
+      "kataja_leads": false,
+      "status": "Käynnissä",
+      "next_game": "21.4.2026 klo 18:30",
+      "next_game_ts": "2026-04-21T18:30:00+03:00",
+      "venue": "Motonet Areena, Joensuu"
+    },
+    "semifinal_other": {
+      "home": "Salon Vilpas",
+      "away": "UU-Korihait",
+      "series": "1-1",
+      "status": "Käynnissä"
+    }
+  },
+  "standings": [
+    {"pos": 1,  "team": "Salon Vilpas",     "g": 32, "w": 25, "l": 7,  "pts": 57, "is_kataja": false, "in_playoffs": true},
+    {"pos": 2,  "team": "Kauhajoki",         "g": 32, "w": 21, "l": 11, "pts": 53, "is_kataja": false, "in_playoffs": true},
+    {"pos": 3,  "team": "Helsinki Seagulls", "g": 32, "w": 20, "l": 12, "pts": 52, "is_kataja": false, "in_playoffs": true},
+    {"pos": 4,  "team": "UU-Korihait",       "g": 32, "w": 19, "l": 13, "pts": 51, "is_kataja": false, "in_playoffs": true},
+    {"pos": 5,  "team": "Tapiolan Honka",    "g": 32, "w": 18, "l": 14, "pts": 50, "is_kataja": false, "in_playoffs": true},
+    {"pos": 6,  "team": "KTP-Basket",        "g": 32, "w": 17, "l": 15, "pts": 49, "is_kataja": false, "in_playoffs": true},
+    {"pos": 7,  "team": "Tampereen Pyrintö", "g": 32, "w": 15, "l": 17, "pts": 47, "is_kataja": false, "in_playoffs": true},
+    {"pos": 8,  "team": "Kataja Basket",     "g": 32, "w": 14, "l": 18, "pts": 46, "is_kataja": true,  "in_playoffs": true},
+    {"pos": 9,  "team": "Bisons Loimaa",     "g": 32, "w": 12, "l": 20, "pts": 44, "is_kataja": false, "in_playoffs": false},
+    {"pos": 10, "team": "Lahti Basketball",  "g": 32, "w": 11, "l": 21, "pts": 43, "is_kataja": false, "in_playoffs": false},
+    {"pos": 11, "team": "Kouvot",             "g": 32, "w": 9,  "l": 23, "pts": 41, "is_kataja": false, "in_playoffs": false},
+    {"pos": 12, "team": "Kobrat",             "g": 32, "w": 4,  "l": 28, "pts": 36, "is_kataja": false, "in_playoffs": false}
+  ],
+  "results": [
+    {"date": "18.4.2026", "home": "Helsinki Seagulls", "away": "Kataja Basket",     "home_score": 85,  "away_score": 80,  "round": "Välierä 2",      "kataja_win": false},
+    {"date": "15.4.2026", "home": "Kataja Basket",     "away": "Helsinki Seagulls", "home_score": null,"away_score": null,"round": "Välierä 1",      "kataja_win": false},
+    {"date": "5.4.2026",  "home": "Kataja Basket",     "away": "Kauhajoki",         "home_score": null,"away_score": null,"round": "Puolivälierä 4", "kataja_win": true},
+    {"date": "2.4.2026",  "home": "Kauhajoki",         "away": "Kataja Basket",     "home_score": null,"away_score": null,"round": "Puolivälierä 3", "kataja_win": true},
+    {"date": "29.3.2026", "home": "Kataja Basket",     "away": "Kauhajoki",         "home_score": null,"away_score": null,"round": "Puolivälierä 2", "kataja_win": true},
+    {"date": "26.3.2026", "home": "Kauhajoki",         "away": "Kataja Basket",     "home_score": null,"away_score": null,"round": "Puolivälierä 1", "kataja_win": true}
+  ]
+}

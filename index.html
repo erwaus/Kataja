@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kataja Basket – Korisliiga 2025–26</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --kataja-blue: #1a3a5c;
+      --kataja-gold: #e8a020;
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --green-bg: #EAF3DE; --green-text: #3B6D11;
+      --red-bg: #FCEBEB;   --red-text: #A32D2D;
+      --blue-bg: #E6F1FB;  --blue-text: #185FA5;
+      --gold-bg: #FFF3DC;  --gold-text: #854F0B;
+      --radius: 10px;
+    }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+
+    .wrap { max-width: 780px; margin: 0 auto; padding: 16px; }
+
+    /* Header */
+    .header { background: var(--kataja-blue); color: #fff; border-radius: var(--radius); padding: 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .logo svg { width: 56px; height: 56px; flex-shrink: 0; }
+    .header-info h1 { font-size: 22px; font-weight: 600; }
+    .header-info p { font-size: 13px; opacity: 0.75; margin-top: 2px; }
+    .header-series { margin-left: auto; text-align: right; }
+    .header-series .label { font-size: 11px; opacity: 0.7; }
+    .header-series .value { font-size: 16px; font-weight: 600; color: var(--kataja-gold); }
+    .updated-badge { font-size: 11px; opacity: 0.6; margin-top: 4px; }
+
+    /* Tabs */
+    .tabs { display: flex; background: var(--card); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; border: 1px solid var(--border); overflow-x: auto; }
+    .tab { padding: 11px 16px; font-size: 13px; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+    .tab:hover { color: var(--kataja-blue); }
+    .tab.active { color: var(--kataja-blue); border-bottom-color: var(--kataja-blue); font-weight: 600; }
+
+    /* Cards */
+    .card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; }
+
+    /* Countdown */
+    .countdown-card { background: var(--kataja-blue); color: #fff; border-radius: var(--radius); padding: 18px; margin-bottom: 12px; text-align: center; }
+    .countdown-label { font-size: 11px; opacity: 0.7; letter-spacing: 0.06em; text-transform: uppercase; }
+    .countdown-matchup { font-size: 18px; font-weight: 600; margin: 6px 0 2px; }
+    .countdown-date { font-size: 12px; opacity: 0.7; margin-bottom: 14px; }
+    .timer { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+    .timer-unit { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 10px 4px; }
+    .timer-num { font-size: 28px; font-weight: 700; line-height: 1; }
+    .timer-lbl { font-size: 10px; opacity: 0.6; margin-top: 2px; }
+    .live-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn-gold { background: var(--kataja-gold); color: #fff; padding: 11px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-ghost { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 11px; border-radius: 8px; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+    /* Stats grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 12px; }
+    .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 8px; text-align: center; }
+    .stat-val { font-size: 20px; font-weight: 700; color: var(--kataja-blue); }
+    .stat-val.red { color: var(--red-text); }
+    .stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Section title */
+    .sec-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+
+    /* Standings */
+    .standings { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .standings th { text-align: left; padding: 6px 8px; color: var(--text-muted); font-size: 11px; font-weight: 600; border-bottom: 1px solid var(--border); }
+    .standings th.r { text-align: right; }
+    .standings td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
+    .standings td.r { text-align: right; color: var(--text-muted); }
+    .standings tr.kataja td { background: #dbeafe; font-weight: 600; color: var(--kataja-blue); }
+    .standings tr.kataja td.r { color: var(--kataja-blue); }
+    .pos { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; }
+    .pos-1 { background: var(--kataja-gold); color: #fff; }
+    .pos-playoff { background: var(--green-bg); color: var(--green-text); }
+    .pos-kataja { background: var(--kataja-blue); color: #fff; }
+    .pos-out { color: var(--text-muted); font-size: 12px; }
+
+    /* Results */
+    .result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; font-size: 13px; }
+    .badge { padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+    .badge-w { background: var(--green-bg); color: var(--green-text); }
+    .badge-l { background: var(--red-bg); color: var(--red-text); }
+
+    /* Bracket */
+    .bracket-wrap { overflow-x: auto; }
+    .bracket { display: flex; gap: 6px; min-width: 560px; align-items: stretch; }
+    .b-col { flex: 1; display: flex; flex-direction: column; }
+    .b-col-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-align: center; padding: 0 4px 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .b-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 10px; }
+    .b-match { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .b-match.active { border-color: var(--kataja-blue); border-width: 1.5px; }
+    .b-match.champion { border-color: var(--kataja-gold); border-width: 1.5px; }
+    .b-team { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; font-size: 12px; border-bottom: 1px solid var(--border); gap: 4px; }
+    .b-team:last-child { border-bottom: none; }
+    .b-team.win { background: #f0fdf4; font-weight: 600; }
+    .b-team.kataja { background: #dbeafe; font-weight: 600; color: var(--kataja-blue); }
+    .b-score { font-weight: 700; font-size: 13px; min-width: 16px; text-align: center; flex-shrink: 0; }
+    .b-status { font-size: 10px; color: var(--text-muted); text-align: center; padding: 3px; background: #f9fafb; }
+    .b-connector { width: 24px; display: flex; flex-direction: column; justify-content: space-around; padding-top: 19px; flex-shrink: 0; }
+    .champion-box { border: 1.5px solid var(--kataja-gold); border-radius: 8px; padding: 14px; text-align: center; margin-top: 10px; }
+    .champion-lbl { font-size: 11px; color: var(--kataja-gold); font-weight: 600; }
+    .champion-name { font-size: 15px; font-weight: 600; margin-top: 4px; color: var(--text-muted); }
+
+    /* Players */
+    .players { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    .player { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+    .player-num { font-size: 18px; font-weight: 700; color: var(--kataja-blue); }
+    .player-name { font-size: 12px; font-weight: 600; margin-top: 2px; }
+    .player-pos { font-size: 11px; color: var(--text-muted); }
+
+    /* Live links */
+    .link-card { display: flex; align-items: center; gap: 14px; padding: 13px 14px; border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: var(--text); margin-bottom: 8px; background: var(--card); }
+    .link-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .link-label { font-weight: 600; font-size: 13px; }
+    .link-desc { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .link-arrow { margin-left: auto; color: var(--kataja-blue); font-size: 13px; font-weight: 600; }
+
+    /* Section visibility */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Loading */
+    .loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+
+    /* Error */
+    .data-notice { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 8px; padding: 8px; background: var(--gold-bg); border-radius: 6px; }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .live-btns { grid-template-columns: 1fr; }
+      .header-series { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="app">
+    <div class="loading">Ladataan tietoja...</div>
+  </div>
+
+</div>
+
+<script>
+// ── Data & tila ──────────────────────────────────────────────────────────────
+
+let DATA = null;
+let activeTab = 'yhteenveto';
+let countdownTimer = null;
+
+// ── Lataa data.json ──────────────────────────────────────────────────────────
+
+async function loadData() {
+  try {
+    const resp = await fetch('data/data.json?t=' + Date.now());
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    DATA = await resp.json();
+    console.log('Data ladattu:', DATA.updated_fi);
+    render();
+  } catch (e) {
+    console.error('Datan lataus epäonnistui:', e);
+    document.getElementById('app').innerHTML =
+      '<div class="loading">Tietojen lataus epäonnistui.<br><a href="https://www.flashscore.fi/joukkue/joensuun-kataja/xOGT6AD5/" target="_blank">Siirry Flashscooreen →</a></div>';
+  }
+}
+
+// ── Renderöi koko sovellus ───────────────────────────────────────────────────
+
+function render() {
+  const app = document.getElementById('app');
+  const d = DATA;
+  const sf = d.playoff.semifinal_kataja;
+
+  app.innerHTML = `
+    ${renderHeader(d, sf)}
+    ${renderTabs()}
+    <div id="sections">
+      <div id="tab-yhteenveto" class="section ${activeTab==='yhteenveto'?'active':''}">
+        ${renderCountdown(sf)}
+        ${renderStats(d)}
+        ${renderStars()}
+      </div>
+      <div id="tab-sarjataulukko" class="section ${activeTab==='sarjataulukko'?'active':''}">
+        ${renderStandings(d.standings)}
+      </div>
+      <div id="tab-playoff" class="section ${activeTab==='playoff'?'active':''}">
+        ${renderBracket(d)}
+      </div>
+      <div id="tab-tulokset" class="section ${activeTab==='tulokset'?'active':''}">
+        ${renderResults(d.results)}
+      </div>
+      <div id="tab-kokoonpano" class="section ${activeTab==='kokoonpano'?'active':''}">
+        ${renderRoster()}
+      </div>
+      <div id="tab-live" class="section ${activeTab==='live'?'active':''}">
+        ${renderLive()}
+      </div>
+    </div>
+    ${d.scrape_success
+      ? `<div class="data-notice">✅ Automaattinen tiedonhaku onnistui · Päivitetty ${d.updated_fi}</div>`
+      : `<div class="data-notice">⚠️ Automaattinen tiedonhaku ei onnistunut · Tiedot päivitetty ${d.updated_fi} · <a href="https://www.basket.fi/korisliiga/" target="_blank">Tarkista basket.fi</a></div>`
+    }
+  `;
+
+  // Käynnistä ajastin
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  // Päivitä data automaattisesti 5 min välein
+  setTimeout(loadData, 5 * 60 * 1000);
+}
+
+// ── Header ───────────────────────────────────────────────────────────────────
+
+function renderHeader(d, sf) {
+  return `
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="28" r="28" fill="#e8a020"/>
+        <circle cx="28" cy="28" r="23" fill="#1a3a5c"/>
+        <circle cx="28" cy="28" r="14" fill="none" stroke="#e8a020" stroke-width="1.5"/>
+        <line x1="14" y1="28" x2="42" y2="28" stroke="#e8a020" stroke-width="1.5"/>
+        <path d="M28 14 Q35 21 35 28 Q35 35 28 42" stroke="#e8a020" stroke-width="1.5" fill="none"/>
+        <path d="M28 14 Q21 21 21 28 Q21 35 28 42" stroke="#e8a020" stroke-width="1.5" fill="none"/>
+        <text x="22" y="33" font-size="15" font-weight="800" fill="white" font-family="Arial,sans-serif">K</text>
+        <text x="30" y="33" font-size="15" font-weight="800" fill="#e8a020" font-family="Arial,sans-serif">B</text>
+      </svg>
+    </div>
+    <div class="header-info">
+      <h1>Kataja Basket</h1>
+      <p>Joensuu · Korisliiga 2025–26 · Motonet Areena</p>
+    </div>
+    <div class="header-series">
+      <div class="label">Välierät tilanne</div>
+      <div class="value">Seagulls johtaa ${sf.series}</div>
+      <div class="updated-badge">Päivitetty ${d.updated_fi}</div>
+    </div>
+  </div>`;
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+
+function renderTabs() {
+  const tabs = [
+    ['yhteenveto','Yhteenveto'],
+    ['sarjataulukko','Sarjataulukko'],
+    ['playoff','Playoff-kaavio'],
+    ['tulokset','Tulokset'],
+    ['kokoonpano','Kokoonpano'],
+    ['live','🔴 Live'],
+  ];
+  return `<div class="tabs">${tabs.map(([id,label]) =>
+    `<button class="tab ${activeTab===id?'active':''}" onclick="switchTab('${id}')">${label}</button>`
+  ).join('')}</div>`;
+}
+
+function switchTab(id) {
+  activeTab = id;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id)?.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.textContent.includes(id) || t.getAttribute('onclick')?.includes(id)) t.classList.add('active');
+  });
+  // Helpompi tapa
+  const tabs = document.querySelectorAll('.tab');
+  const tabIds = ['yhteenveto','sarjataulukko','playoff','tulokset','kokoonpano','live'];
+  tabs.forEach((t,i) => t.classList.toggle('active', tabIds[i] === id));
+}
+
+// ── Countdown ────────────────────────────────────────────────────────────────
+
+function renderCountdown(sf) {
+  return `
+  <div class="countdown-card">
+    <div class="countdown-label">Seuraava ottelu · Välierä 3</div>
+    <div class="countdown-matchup">Kataja Basket — Helsinki Seagulls</div>
+    <div class="countdown-date">${sf.next_game} · ${sf.venue}</div>
+    <div class="timer">
+      <div class="timer-unit"><div class="timer-num" id="t-d">–</div><div class="timer-lbl">päivää</div></div>
+      <div class="timer-unit"><div class="timer-num" id="t-h">–</div><div class="timer-lbl">tuntia</div></div>
+      <div class="timer-unit"><div class="timer-num" id="t-m">–</div><div class="timer-lbl">min</div></div>
+      <div class="timer-unit"><div class="timer-num" id="t-s">–</div><div class="timer-lbl">sek</div></div>
+    </div>
+    <div class="live-btns">
+      <a class="btn-gold" href="https://www.flashscore.fi/joukkue/joensuun-kataja/xOGT6AD5/" target="_blank">⚡ Seuraa livenä</a>
+      <a class="btn-ghost" href="https://www.basket.fi/korisliiga/" target="_blank">📋 basket.fi</a>
+    </div>
+  </div>`;
+}
+
+function updateCountdown() {
+  const target = new Date(DATA?.playoff?.semifinal_kataja?.next_game_ts || '2026-04-21T18:30:00+03:00');
+  const diff = target - new Date();
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  if (diff <= 0) {
+    set('t-d','0'); set('t-h','00'); set('t-m','00'); set('t-s','00');
+    return;
+  }
+  set('t-d', Math.floor(diff/86400000));
+  set('t-h', String(Math.floor((diff%86400000)/3600000)).padStart(2,'0'));
+  set('t-m', String(Math.floor((diff%3600000)/60000)).padStart(2,'0'));
+  set('t-s', String(Math.floor((diff%60000)/1000)).padStart(2,'0'));
+}
+
+// ── Stats ────────────────────────────────────────────────────────────────────
+
+function renderStats(d) {
+  const sf = d.playoff.semifinal_kataja;
+  return `
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-val">7→</div><div class="stat-lbl">Lähtösijoitus</div></div>
+    <div class="stat-box"><div class="stat-val">4–0</div><div class="stat-lbl">Puolivälierät</div></div>
+    <div class="stat-box"><div class="stat-val red">${sf.series}</div><div class="stat-lbl">Välierät</div></div>
+    <div class="stat-box"><div class="stat-val" style="font-size:14px;">Joensuu</div><div class="stat-lbl">Kotihalli</div></div>
+  </div>`;
+}
+
+function renderStars() {
+  return `
+  <div class="card">
+    <div class="sec-title">Kauden tähtipelaajat</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:11px;color:var(--text-muted);">Pisteet / ottelu</div>
+        <div style="font-weight:600;font-size:13px;margin-top:2px;">De'Vion Harmon</div>
+        <div style="font-size:22px;font-weight:700;color:var(--kataja-blue);">~25 ppg</div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:11px;color:var(--text-muted);">Syötöt / ottelu</div>
+        <div style="font-weight:600;font-size:13px;margin-top:2px;">Henri Kantonen</div>
+        <div style="font-size:22px;font-weight:700;color:var(--kataja-blue);">~6 apg</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Standings ────────────────────────────────────────────────────────────────
+
+function renderStandings(standings) {
+  const rows = standings.map(t => {
+    const posEl = t.pos === 1
+      ? `<span class="pos pos-1">1</span>`
+      : t.is_kataja
+        ? `<span class="pos pos-kataja">${t.pos}</span>`
+        : t.in_playoffs
+          ? `<span class="pos pos-playoff">${t.pos}</span>`
+          : `<span class="pos-out">${t.pos}</span>`;
+    return `
+    <tr class="${t.is_kataja ? 'kataja' : ''}">
+      <td>${posEl}</td>
+      <td>${t.is_kataja ? '⭐ ' : ''}${t.team}</td>
+      <td class="r">${t.g}</td>
+      <td class="r">${t.w}</td>
+      <td class="r">${t.l}</td>
+      <td class="r" style="font-weight:600;">${t.pts}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+  <div class="card">
+    <div class="sec-title">Loppusijoitus jatkosarjan jälkeen</div>
+    <table class="standings">
+      <thead><tr>
+        <th style="width:30px;">#</th>
+        <th>Joukkue</th>
+        <th class="r">O</th><th class="r">V</th><th class="r">H</th>
+        <th class="r">Pist</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:10px;display:flex;gap:12px;font-size:11px;color:var(--text-muted);flex-wrap:wrap;">
+      <span><span class="pos pos-1" style="width:14px;height:14px;font-size:9px;">1</span> Voittaja</span>
+      <span><span class="pos pos-playoff" style="width:14px;height:14px;font-size:9px;">·</span> Playoffs</span>
+      <span><span class="pos pos-kataja" style="width:14px;height:14px;font-size:9px;">·</span> Kataja</span>
+    </div>
+  </div>`;
+}
+
+// ── Bracket ───────────────────────────────────────────────────────────────────
+
+function renderBracket(d) {
+  return `
+  <div class="card">
+    <div class="sec-title">Playoff-kaavio 2025–26</div>
+    <div class="bracket-wrap">
+      <div class="bracket">
+
+        <div class="b-col">
+          <div class="b-col-title">Puolivälierät</div>
+          <div class="b-matches">
+            <div>
+              <div class="b-match">
+                <div class="b-team win">Salon Vilpas <span class="b-score" style="color:var(--green-text);">4</span></div>
+                <div class="b-team">Tampereen Pyrintö <span class="b-score" style="color:var(--red-text);">1</span></div>
+              </div>
+              <div class="b-status">Vilpas voitti 4–1</div>
+            </div>
+            <div>
+              <div class="b-match">
+                <div class="b-team win">UU-Korihait <span class="b-score" style="color:var(--green-text);">4</span></div>
+                <div class="b-team">Tapiolan Honka <span class="b-score" style="color:var(--red-text);">1</span></div>
+              </div>
+              <div class="b-status">Korihait voitti 4–1</div>
+            </div>
+            <div>
+              <div class="b-match">
+                <div class="b-team win">Helsinki Seagulls <span class="b-score" style="color:var(--green-text);">4</span></div>
+                <div class="b-team">KTP-Basket <span class="b-score" style="color:var(--red-text);">3</span></div>
+              </div>
+              <div class="b-status">Seagulls voitti 4–3</div>
+            </div>
+            <div>
+              <div class="b-match">
+                <div class="b-team kataja">⭐ Kataja Basket <span class="b-score" style="color:var(--green-text);">4</span></div>
+                <div class="b-team">Kauhajoki <span class="b-score" style="color:var(--red-text);">0</span></div>
+              </div>
+              <div class="b-status">Kataja voitti 4–0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="b-connector">
+          <svg width="24" height="90" viewBox="0 0 24 90"><path d="M0 22 H12 V68 H0" stroke="#d1d5db" stroke-width="1" fill="none"/></svg>
+          <svg width="24" height="90" viewBox="0 0 24 90"><path d="M0 22 H12 V68 H0" stroke="#d1d5db" stroke-width="1" fill="none"/></svg>
+        </div>
+
+        <div class="b-col">
+          <div class="b-col-title">Välierät</div>
+          <div class="b-matches">
+            <div style="margin-top:35px;">
+              <div class="b-match">
+                <div class="b-team win">Salon Vilpas <span class="b-score" style="color:var(--green-text);">1</span></div>
+                <div class="b-team">UU-Korihait <span class="b-score">1</span></div>
+              </div>
+              <div class="b-status" style="background:var(--gold-bg);color:var(--gold-text);">Tilanne 1–1</div>
+            </div>
+            <div style="margin-bottom:35px;">
+              <div class="b-match active">
+                <div class="b-team win">Helsinki Seagulls <span class="b-score" style="color:var(--green-text);">2</span></div>
+                <div class="b-team kataja">⭐ Kataja Basket <span class="b-score" style="color:var(--red-text);">0</span></div>
+              </div>
+              <div class="b-status" style="background:var(--blue-bg);color:var(--blue-text);">Käynnissä · 2–0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="b-connector">
+          <svg width="24" height="90" viewBox="0 0 24 90" style="margin:auto;"><path d="M0 45 H24" stroke="#d1d5db" stroke-width="1" fill="none"/></svg>
+        </div>
+
+        <div class="b-col">
+          <div class="b-col-title">Finaali</div>
+          <div style="display:flex;flex-direction:column;justify-content:center;flex:1;">
+            <div class="b-match champion">
+              <div class="b-team" style="color:var(--text-muted);">TBD <span class="b-score">–</span></div>
+              <div class="b-team" style="color:var(--text-muted);">TBD <span class="b-score">–</span></div>
+            </div>
+            <div class="b-status">Ei alkanut</div>
+            <div class="champion-box">
+              <div class="champion-lbl">🏆 Suomen mestari</div>
+              <div class="champion-name">Ratkeaa myöhemmin</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <p style="margin-top:10px;font-size:11px;color:var(--text-muted);">Sarjat ovat paras 4/7. Seagulls johtaa Katajaa 2–0 — Katajan on voitettava 4 seuraavaa selvitäkseen.</p>
+  </div>`;
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+
+function renderResults(results) {
+  const rows = results.map(r => {
+    const score = (r.home_score !== null && r.away_score !== null)
+      ? `<span style="font-weight:600;">${r.home_score}–${r.away_score}</span>`
+      : '';
+    const badge = r.kataja_win
+      ? `<span class="badge badge-w">V</span>`
+      : `<span class="badge badge-l">H</span>`;
+    return `
+    <div class="result-row">
+      <div>
+        <div style="font-weight:600;">${r.home} – ${r.away}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${r.date} · ${r.round}</div>
+      </div>
+      <div style="text-align:right;display:flex;align-items:center;gap:8px;">${score}${badge}</div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="card">
+    <div class="sec-title">Viimeisimmät ottelut</div>
+    ${rows}
+    <div style="margin-top:10px;">
+      <a href="https://www.flashscore.fi/joukkue/joensuun-kataja/xOGT6AD5/tulokset/" target="_blank"
+         style="display:flex;align-items:center;gap:6px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--kataja-blue);text-decoration:none;">
+        Kaikki tulokset Flashscoressa →
+      </a>
+    </div>
+  </div>`;
+}
+
+// ── Roster ───────────────────────────────────────────────────────────────────
+
+function renderRoster() {
+  const players = [
+    {num:'#32',name:'Rahlir Hollis-Jefferson',pos:'Laitahyökkääjä · 34 v'},
+    {num:'#18',name:'Antti Kanervo',pos:'Sentteri · 37 v'},
+    {num:'#55',name:'Henri Kantonen',pos:'Takamies · 28 v'},
+    {num:'#3',name:'Jared Kimbrough',pos:'Sentteri · 26 v'},
+    {num:'#21',name:'Teemu Knihtinen',pos:'Laitahyökkääjä · 27 v'},
+    {num:'#10',name:'Eetu Lähdetniemi',pos:'Takamies · 26 v'},
+    {num:'#4',name:'Jermaine Marshall',pos:'Laitahyökkääjä · 25 v'},
+    {num:'#45',name:'Henri Permanto',pos:'Laitahyökkääjä · 25 v'},
+    {num:'#17',name:'Valtteri Pokela',pos:'Takamies · 17 v'},
+    {num:'#8',name:'Otso Purmonen',pos:'Takamies · 19 v'},
+    {num:'#5',name:'Joonas Timonen',pos:'Takamies · 25 v'},
+    {num:'#23',name:'Thomas Tumba',pos:'Laitahyökkääjä · 25 v'},
+  ];
+  return `
+  <div class="card">
+    <div class="sec-title">Pelaajat 2025–26</div>
+    <div class="players">
+      ${players.map(p => `
+      <div class="player">
+        <div class="player-num">${p.num}</div>
+        <div class="player-name">${p.name}</div>
+        <div class="player-pos">${p.pos}</div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:10px;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;">
+      <span style="color:var(--text-muted);">Päävalmentaja:</span> <strong>Petri Virtanen</strong>
+    </div>
+  </div>`;
+}
+
+// ── Live links ────────────────────────────────────────────────────────────────
+
+function renderLive() {
+  const links = [
+    {href:'https://www.flashscore.fi/joukkue/joensuun-kataja/xOGT6AD5/',icon:'⚡',bg:'#e8f0fe',label:'Flashscore — Kataja Basket',desc:'Reaaliaikaiset pisteet, tilastot ja tapahtumat'},
+    {href:'https://www.flashscore.fi/koripallo/suomi/korisliiga/',icon:'🏀',bg:'#fff3e0',label:'Flashscore — Korisliiga',desc:'Kaikki Korisliigan ottelut livenä'},
+    {href:'https://www.basket.fi/korisliiga/ottelut/tulokset/',icon:'📋',bg:'#e8f5e9',label:'basket.fi — Virallinen tulospalvelu',desc:'Koripalloliiton viralliset tulokset ja tilastot'},
+    {href:'https://www.katajabasket.fi',icon:'🏠',bg:'#fef3c7',label:'katajabasket.fi — Virallinen seurasivu',desc:'Uutiset, liput ja seuran tiedotteet'},
+  ];
+  return `
+  <div class="card">
+    <div class="sec-title">Seuraa livenä</div>
+    ${links.map(l => `
+    <a class="link-card" href="${l.href}" target="_blank">
+      <div class="link-icon" style="background:${l.bg};">${l.icon}</div>
+      <div><div class="link-label">${l.label}</div><div class="link-desc">${l.desc}</div></div>
+      <div class="link-arrow">→</div>
+    </a>`).join('')}
+  </div>`;
+}
+
+// ── Käynnistä ─────────────────────────────────────────────────────────────────
+
+loadData();
+</script>
+</body>
+</html>
